@@ -14,6 +14,9 @@ import { getImageData } from "./lib/getImageData.js";
 import loadImageData from "./lib/loadImageData.js";
 import invertVolume from "./lib/invertVolume.js";
 import EVENTS from "./events.js";
+import { overrideCornerstone } from "./cornerstone.config";
+import { Cone } from "./examples/Cone";
+import { Ttwo, Tm } from "./examples/T2";
 
 export {
   View2D,
@@ -32,6 +35,10 @@ export {
   vtkSVGRotatableCrosshairsWidget,
   invertVolume,
   EVENTS,
+  overrideCornerstone,
+  Cone,
+  Ttwo,
+  Tm,
 };
 
 export default View2D;

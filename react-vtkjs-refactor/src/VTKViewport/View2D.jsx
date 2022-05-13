@@ -120,7 +120,11 @@ export default class View2D extends Component {
     oglrw.buildPass(true);
 
     const istyle = vtkInteractorStyleMPRSlice.newInstance();
-    this.renderWindow.getInteractor().setInteractorStyle(istyle);
+    const interactor = this.renderWindow.getInteractor();
+    console.log({ interactor });
+    console.log({ istyle });
+
+    // interactor.setInteractorStyle(istyle);
 
     const inter = this.renderWindow.getInteractor();
     const updateCameras = () => {

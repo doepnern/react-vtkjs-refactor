@@ -1,9 +1,11 @@
-import cornerstone from 'cornerstone-core';
+import { getCornerstone } from "../../cornerstone.config";
 
 export default function buildMetadata(imageIds) {
   // Retrieve the Cornerstone imageIds from the display set
   // TODO: In future, we want to get the metadata independently from Cornerstone
   const imageId0 = imageIds[0];
+  const cornerstone = getCornerstone();
+  console.log(cornerstone.metaData.get("imagePixelModule", imageId0));
 
   const {
     pixelRepresentation,
@@ -12,10 +14,10 @@ export default function buildMetadata(imageIds) {
     highBit,
     photometricInterpretation,
     samplesPerPixel,
-  } = cornerstone.metaData.get('imagePixelModule', imageId0);
+  } = cornerstone.metaData.get("imagePixelModule", imageId0);
 
   let { windowWidth, windowCenter } = cornerstone.metaData.get(
-    'voiLutModule',
+    "voiLutModule",
     imageId0
   );
 
@@ -29,15 +31,15 @@ export default function buildMetadata(imageIds) {
   }
 
   const { modality } = cornerstone.metaData.get(
-    'generalSeriesModule',
+    "generalSeriesModule",
     imageId0
   );
 
   // Compute the image size and spacing given the meta data we already have available.
   const metaDataMap = new Map();
-  imageIds.forEach(imageId => {
+  imageIds.forEach((imageId) => {
     // TODO: Retrieve this from somewhere other than Cornerstone
-    const metaData = cornerstone.metaData.get('imagePlaneModule', imageId);
+    const metaData = cornerstone.metaData.get("imagePlaneModule", imageId);
 
     metaDataMap.set(imageId, metaData);
   });

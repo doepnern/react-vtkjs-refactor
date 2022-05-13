@@ -1,32 +1,34 @@
-import cornerstone from 'cornerstone-core';
+import { getCornerstone } from "../../cornerstone.config";
 
 export default function getPatientWeightAndCorrectedDose(imageId) {
-  const seriesModule = cornerstone.metaData.get('generalSeriesModule', imageId);
+  const cornerstone = getCornerstone();
+
+  const seriesModule = cornerstone.metaData.get("generalSeriesModule", imageId);
 
   const patientStudyModule = cornerstone.metaData.get(
-    'patientStudyModule',
+    "patientStudyModule",
     imageId
   );
 
   if (!patientStudyModule) {
-    throw new Error('patientStudyModule metadata is required');
+    throw new Error("patientStudyModule metadata is required");
   }
 
   const patientWeight = patientStudyModule.patientWeight; // In kg
 
   if (!patientWeight) {
     throw new Error(
-      'patientWeight must be present in patientStudyModule for modality PT'
+      "patientWeight must be present in patientStudyModule for modality PT"
     );
   }
 
   const petSequenceModule = cornerstone.metaData.get(
-    'petIsotopeModule',
+    "petIsotopeModule",
     imageId
   );
 
   if (!petSequenceModule) {
-    throw new Error('petSequenceModule metadata is required');
+    throw new Error("petSequenceModule metadata is required");
   }
 
   // TODO:
@@ -41,7 +43,7 @@ export default function getPatientWeightAndCorrectedDose(imageId) {
 
   if (!startTime || !totalDose || !halfLife || !seriesAcquisitionTime) {
     throw new Error(
-      'The required radiopharmaceutical information was not present.'
+      "The required radiopharmaceutical information was not present."
     );
   }
 

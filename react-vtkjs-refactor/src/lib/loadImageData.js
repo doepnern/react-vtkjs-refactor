@@ -1,6 +1,6 @@
-import cornerstone from 'cornerstone-core';
-import insertSlice from './data/insertSlice.js';
-import getPatientWeightAndCorrectedDose from './data/getPatientWeightAndCorrectedDose.js';
+import { getCornerstone } from "../cornerstone.config";
+import insertSlice from "./data/insertSlice.js";
+import getPatientWeightAndCorrectedDose from "./data/getPatientWeightAndCorrectedDose.js";
 
 // TODO: If we attempt to load multiple imageDataObjects at once this will break.
 export default function loadImageDataProgressively(imageDataObject) {
@@ -9,18 +9,15 @@ export default function loadImageDataProgressively(imageDataObject) {
     // Returning promise to be resolved by other process as loading.
     return;
   }
+  const cornerstone = getCornerstone();
 
-  const {
-    imageIds,
-    vtkImageData,
-    metaDataMap,
-    sortedDatasets,
-  } = imageDataObject;
+  const { imageIds, vtkImageData, metaDataMap, sortedDatasets } =
+    imageDataObject;
 
   const imageId0 = imageIds[0];
 
   const seriesModule = cornerstone.metaData.get(
-    'generalSeriesModule',
+    "generalSeriesModule",
     imageId0
   );
 
@@ -28,10 +25,9 @@ export default function loadImageDataProgressively(imageDataObject) {
   const modality = seriesModule && seriesModule.modality;
   let modalitySpecificScalingParameters;
 
-  if (modality === 'PT') {
-    modalitySpecificScalingParameters = getPatientWeightAndCorrectedDose(
-      imageId0
-    );
+  if (modality === "PT") {
+    modalitySpecificScalingParameters =
+      getPatientWeightAndCorrectedDose(imageId0);
   }
 
   imageDataObject.isLoading = true;
@@ -54,7 +50,7 @@ export default function loadImageDataProgressively(imageDataObject) {
   const reRenderFraction = numberOfFrames / 5;
   let reRenderTarget = reRenderFraction;
 
-  const insertPixelDataErrorHandler = error => {
+  const insertPixelDataErrorHandler = (error) => {
     numberProcessed++;
     imageDataObject._publishPixelDataInsertedError(error);
 
@@ -64,11 +60,11 @@ export default function loadImageDataProgressively(imageDataObject) {
     }
   };
 
-  const insertPixelData = image => {
+  const insertPixelData = (image) => {
     const { imagePositionPatient } = metaDataMap.get(image.imageId);
 
     const sliceIndex = sortedDatasets.findIndex(
-      dataset => dataset.imagePositionPatient === imagePositionPatient
+      (dataset) => dataset.imagePositionPatient === imagePositionPatient
     );
 
     const { max, min } = insertSlice(
@@ -114,15 +110,17 @@ function prefetchImageIds(
   insertPixelData,
   insertPixelDataErrorHandler
 ) {
-  const imageLoadPoolManager = cornerstone.imageLoadPoolManager;
-  const requestType = 'prefetch';
+  const cornerstone = getCornerstone();
 
-  const requestFn = id =>
+  const imageLoadPoolManager = cornerstone.imageLoadPoolManager;
+  const requestType = "prefetch";
+
+  const requestFn = (id) =>
     cornerstone
       .loadAndCacheImage(id)
       .then(insertPixelData, insertPixelDataErrorHandler);
 
-  imageIds.forEach(imageId => {
+  imageIds.forEach((imageId) => {
     imageLoadPoolManager.addRequest(
       requestFn.bind(this, imageId),
       requestType,
