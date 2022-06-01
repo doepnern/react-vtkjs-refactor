@@ -5,7 +5,6 @@ export default function buildMetadata(imageIds) {
   // TODO: In future, we want to get the metadata independently from Cornerstone
   const imageId0 = imageIds[0];
   const cornerstone = getCornerstone();
-  console.log(cornerstone.metaData.get("imagePixelModule", imageId0));
 
   const {
     pixelRepresentation,
